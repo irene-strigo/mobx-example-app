@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { observer, inject } from "mobx-react";
 
-function App() {
+
+const App = inject(['bookStore'])(observer(({ bookStore }) => {
+  const [newBook, setNewBook] = useState('');
+
+  const addNewBook = () => {
+    if (!newBook) return;
+    bookStore.addBook(newBook);
+    setNewBook("");
+  }
+  const deleteBook = (index) => {
+    bookStore.removeBook(index)
+  }
+
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <ol>
+        {bookStore.books.map((book, index) => (
+          <li key={index}>
+            {book}
+            <button onClick={() => deleteBook(index)}>delete</button>
+          </li>
+        ))}
+      </ol>
+      <input type="text" value={newBook} onChange={(e) => setNewBook(e.target.value)} />
+      <button onClick={addNewBook}>add</button>
     </div>
-  );
-}
+  )
+}));
 
 export default App;
